@@ -1,0 +1,124 @@
+// Launch of the app
+describe("launch app", () => {
+  it("passes", () => {
+    cy.visit("http://automationpractice.com/index.php");
+    cy.clearLocalStorage();
+    cy.clearCookies();
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });
+  });
+
+  // Add to the cart a Faded Short Sleeve T Shirt, size medium, colour blue
+
+  it("Faded Short Sleeve T Shirt, size medium, colour blue", () => {
+    cy.get("#block_top_menu > ul > li:nth-child(3) > a").click();
+    cy.get(".right-block > h5 > .product-name").click();
+    cy.get("#group_1").select("2");
+    cy.get("#color_14").click();
+    cy.get(".exclusive > span").click();
+    cy.get(".continue > span").click();
+  });
+
+  // Add to the cart an Evening Dress, size small, colour beige
+
+  it("Evening Dress, size small, colour beige", () => {
+    cy.get(".logo").click();
+    cy.get(".sf-menu > :nth-child(2) > .sf-with-ul").click();
+    cy.get(":nth-child(2) > h5 > .subcategory-name").click();
+    cy.get(".right-block > h5 > .product-name");
+    cy.get("#group_1").select("1");
+    cy.get("#color_7").click();
+    cy.get(".exclusive > span").click();
+    cy.get(".continue > span").click();
+  });
+
+  // Add to the cart a Printed Summer Dress, size medium, colour orange
+
+  it("Printed Summer Dress, size medium, colour orange", () => {
+    cy.get(".logo").click();
+    cy.get(".sf-menu > :nth-child(2) > .sf-with-ul").click();
+    cy.get(":nth-child(3) > h5 > .subcategory-name").click();
+    cy.get(
+      ".first-in-line > .product-container > .right-block > h5 > .product-name"
+    ).click();
+    cy.get("#group_1").select("2");
+    cy.get("#color_13").click();
+    cy.get(".exclusive > span").click();
+  });
+
+  // Checkout
+
+  it("Checkout", () => {
+    cy.get(".button-medium > span").click();
+
+    // Verification of all the products.
+
+    cy.get("#product_1_4_0_0 > .cart_description > .product-name > a").contains(
+      "text",
+      "Faded Short Sleeve T Shirt"
+    );
+    cy.get("#product_1_4_0_0 > .cart_description > :nth-child(3)").contains(
+      "text",
+      "blue"
+    );
+    cy.get("#product_1_4_0_0 > .cart_description > :nth-child(3)").contains(
+      "text",
+      "M"
+    );
+
+    cy.get(
+      "#product_4_16_0_0 > .cart_description > .product-name > a"
+    ).contains("text", "Faded Short Sleeve T Shirt");
+    cy.get(
+      "#product_4_16_0_0 > .cart_description > :nth-child(3) > a"
+    ).contains("text", "beige");
+    cy.get(
+      "#product_4_16_0_0 > .cart_description > :nth-child(3) > a"
+    ).contains("text", "S");
+
+    cy.get(
+      "#product_5_21_0_0 > .cart_description > .product-name > a"
+    ).contains("text", "Faded Short Sleeve T Shirt");
+    cy.get(
+      "#product_5_21_0_0 > .cart_description > :nth-child(3) > a"
+    ).contains("text", "orange");
+    cy.get(
+      "#product_5_21_0_0 > .cart_description > :nth-child(3) > a"
+    ).contains("text", "M");
+  });
+
+  // Remove the Evening Dress from the cart
+
+  it("Remove the Evening Dress from the cart", () => {
+    cy.get("#product_1_1_0_0 > .cart_delete > div").click();
+    cy.wait(2000);
+  });
+
+  // Add a second Faded Short Sleeve T Shirt of the same size and colour
+
+  it("Add a second Faded Short Sleeve T Shirt of the same size and colour", () => {
+    cy.get("#cart_quantity_up_1_1_0_0 > span > .icon-plus").click();
+    cy.wait(2000);
+  });
+
+  // Assert the total for each line in the cart
+
+  it("Assert the total for each line in the cart", () => {
+    cy.get("#total_product_price_1_4_0").contains("value", "$33.02");
+    cy.get("#total_product_price_5_21_0").contains("value", "$28.98");
+    cy.get("#total_product").contains("value", "$62.00");
+    cy.wait(2000);
+  });
+
+  // Assert the cart total is $65.53
+
+  it("Assert the cart total is $65.53", () => {
+    cy.get("#total_product").contains("value", "$62.00");
+    cy.get("#total_shipping").contains("value", "$2.00");
+    cy.get("#total_price_without_tax").contains("value", "$64.00");
+    cy.get("#total_tax").contains("value", "$64.00");
+    cy.get(".price-percent-reduction").contains("value", "-5.01");
+    cy.check("$64.00 + $1.53").should("value", "$65.53");
+  });
+});
